@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food recipe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Quintessential&family=Satisfy&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+        .center {
+            text-align: center;
+            background-color: blueviolet;
+            color: white;
+        }
+
+        .search {
+            padding-top: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            
+
+        }
+
+        .searchItemsInput
+        {
+            align-items: center;
+            padding-top: 80px;
+
+        }
+
+        input[type=text],
+        select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .searchButton {
+            align-items: center;
+            margin: 0;
+            left: 50%;
+        }
+        #imgs {
+            border-radius: 50%;
+        }
+        .formPart
+        {
+            text-align: center;
+        }
+
+        .inputs {
+            padding: 20px;
+  font-size: 24px;
+}
+    </style>
+</head>
+
+<body>
+    <div class="center">
+        <h2 style="font-family: 'Quintessential', cursive;
+        ;font-size: 40px;padding:20px;letter-spacing: 3px;"> FOOD COURT</h2>
+    </div>
+    <div class="search">
+        <div class=img>
+            <img src="navimg.jpg" alt="Cinque Terre" width="auto" height="250" id="imgs">
+        </div>
+        <div class="searchItemsInput" >
+            <form class="formPart">
+                <input class="inputs" type="search" id="foodItem" size="50" placeholder="Search Food Items for Receipes"
+                    style="border: 2px solid rgb(38, 0, 255); font-size:large ;border-radius: 25px;align-items: center;" />
+                    <br><br>
+                <button id="myBtn" 
+                    style="background-color:rgb(255, 0, 149);align-items: center; color:white;font-size:small;padding: 10px 24px;border-radius: 8px;">Search</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const APP_ID = "aaf256e4";
+        const APP_key = "a9008e7ee6443853ea9fcd14cc43cacb";
+        let searchQuery = "";
+        const searchForm = document.querySelector("form");
+        
+        var myPage = document.createElement("div");
+        myPage.style.display = 'flex';
+        myPage.style.flexWrap = 'wrap';
+        myPage.style.flexDirection='row';
+        myPage.style.width = "100%";
+        myPage.style.border = "10px 0px 10px 5px";
+        myPage.style.backgroundColor = "white";
+        // JSON fetching ..
+        searchForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            searchQuery = e.target.querySelector("input").value;
+            showItems(searchQuery);
+        });
+        async function showItems(searchQuery) {
+            try {
+
+                var url = `https://api.edamam.com/search?q=${searchQuery}&app_id=${APP_ID}&app_key=${APP_key}&from=0&to=20`;
+                var dat = await fetch(url)
+                var dataObj = await dat.json();
+                console.log(dataObj);
+                for (var recipesNo = 0; recipesNo < 18; recipesNo++) {
+                    //block of Containers
+                    var card = document.createElement("div");
+                    card.style.height ='550px';
+                   card.style.width = "500px";
+                    card.style.margin = '0px 3px 3px'
+                 
+                    card.style.backgroundColor = "#ffffff";
+                    card.style.display = "grid";
+                    card.style.justifyItems = "center";
+                    card.style.alignItems = "center";
+
+                    var label = document.createElement('h5');
+                    label.innerHTML = dataObj.hits[recipesNo].recipe.label;
+                    label.style.marginTop = "80px";
+                    label.style.color = 'black'
+                    label.style.textAlign = "center";
+                    card.appendChild(label);
+
+                    var line = document.createElement("div");
+                    line.style.paddingBottom="20px";
+                    // line.style.width="auto";
+                    // line.style.height="auto";
+                   
+        
+                    var cuisineType = document.createElement('h5');
+                    cuisineType.innerHTML = dataObj.hits[recipesNo].recipe.cuisineType;
+                    cuisineType.style.marginTop = "5px";
+                    cuisineType.style.color = 'black'
+                    cuisineType.style.textAlign = "center";
+                    cuisineType.style.display="inline";
+                    line.appendChild(cuisineType);
+
+                    var vimg = document.createElement('img');
+                    var veg=0;
+                    for(var hLabels =0;hLabels<((dataObj.hits[recipesNo].recipe.healthLabels).length)-1;hLabels++)
+                    {                // console.log(dataObj.hits[recipesNo].recipe.healthLabels[hLabels]);
+                        if(dataObj.hits[recipesNo].recipe.healthLabels[hLabels]==("Vegetarian" ||"Egg-Free")) 
+                        {
+                            veg=1;
+                            break;
+                        }
+                    }       
+                    console.log(veg); 
+                    if(veg ==1) 
+                    {    vimg.src = "images/veg.png";}
+                    if(veg==0)
+                    {    vimg.src= "images/nonveg.png"; }
+
+                    vimg.style.height ="25px";
+                    vimg.style.width="25px";
+                    line.appendChild(vimg);
+
+                    card.appendChild(line);
+                   // image placement
+                    var img = document.createElement('img');
+                    img.src = dataObj.hits[recipesNo].recipe.image;
+                    img.style.marginTop = "0px";
+                    img.style.marginBottom = "10px";
+                    card.appendChild(img);
+
+                    var btn = document.createElement('button');
+                    btn.type="button";
+                    btn.className="btn btn-primary btn-lg";
+                    btn.innerHTML="Click for recipe";
+                    btn.style.marginBottom ="30px";
+                    card.appendChild(btn);
+                    document.body.getElementsByClassName("btn btn-primary btn-lg",onclick=function()
+                    {
+                        //window.location.href = dataObj.hits[recipesNo].recipe.url;
+                        window.open(dataObj.hits[recipesNo].recipe.url, "_blank");
+                    }
+                    )  
+                    console.log(dataObj.hits[recipesNo].recipe.label);
+                    myPage.appendChild(card);
+                }
+                document.body.appendChild(myPage);
+            }
+            catch (err) { console.log(err) }
+        }
+    </script>
+</body>
+</html>
+
