@@ -1,2 +1,2 @@
 # Food_recipes
-Food recipes on one website
+Food recipes on one website using Public Api data
